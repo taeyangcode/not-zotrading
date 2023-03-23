@@ -1,14 +1,7 @@
 import socketio
 import uuid
 
-from enum import Enum, StrEnum
-
-class RegisterError(Enum):
-    InvalidCredentials = 1
-
-class ClientEvents(StrEnum):
-    Register = "register"
-    Login = "login"
+from types import ClientEvents, RegisterError
 
 class UserDetails:
     def __init__(self, username: str, email: str, password: str, id: uuid.UUID):
