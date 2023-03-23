@@ -1,4 +1,4 @@
 default:
-	python server.py & python main.py
+	python3 source/server.py | python3 main.py
 lint:
 	mypy source

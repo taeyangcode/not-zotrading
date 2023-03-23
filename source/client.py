@@ -1,7 +1,6 @@
 import socketio
 import uuid
-
-from source.types import ClientEvents, RegisterError, UserDetails
+from source.project_types import ClientEvents, RegisterError, UserDetails
 
 class User:
     def __init__(self, client: socketio.Client, id: uuid.UUID) -> None:
@@ -24,13 +23,10 @@ Creates a connection to server under default port 3000
 """
 
 def create_client_connection(client: socketio.Client, port: int | None) -> socketio.Client:
-    client.connect("http://localhost:3000")
+    client.connect("http://localhost:" + str(port or 3000))
     return client
 
-client: socketio.Client = socketio.Client()
-client.connect("http://localhost:3000")
-user: Guest = Guest(client)
-user.register("jacob", "jacob@jacob", "jacob123")
+client: socketio.Client = create_client_connection(socketio.Client(), 3000)
 
 """
 Emits register event to register user
