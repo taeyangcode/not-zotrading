@@ -1,12 +1,12 @@
 import socketio
 import uuid
 
-from enum import Enum
+from enum import Enum, StrEnum
 
 class RegisterError(Enum):
     InvalidCredentials = 1
 
-class ClientEvents(Enum):
+class ClientEvents(StrEnum):
     Register = "register"
     Login = "login"
 
