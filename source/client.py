@@ -47,7 +47,7 @@ Emits register event to register user
 @client.event
 def register(client: socketio.Client, details: UserDetails, error: RegisterError | None) -> None:
     match error:
-        case RegisterError:
+        case RegisterError.InvalidCredentials:
             # Handle Register Error
             return
 
