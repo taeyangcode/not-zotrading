@@ -9,12 +9,12 @@ class User:
         self.id = id
 
 class Guest:
-    def __init__(self, client: socketio.Client, id: uuid.UUID) -> None:
+    def __init__(self, client: socketio.Client) -> None:
         self.client = client
-        self.id = id
+        self.id = uuid.uuid4()
 
     def register(self, username: str, email: str, password: str) -> None:
-        self.client.emit(ClientEvents.Register, data = UserDetails(username, email, password, self.id))
+        self.client.emit("register", data = { "username": username, "email": email, "password": password, "id": str(self.id) })
 
 """
 Creates a connection to server under default port 3000
@@ -24,12 +24,13 @@ Creates a connection to server under default port 3000
 """
 
 def create_client_connection(client: socketio.Client, port: int | None) -> socketio.Client:
-    client.connect("http://localhost" + str(port or 3000))
+    client.connect("http://localhost:3000")
     return client
 
-client: socketio.Client = create_client_connection(socketio.Client(), 3000)
+client: socketio.Client = socketio.Client()
+client.connect("http://localhost:3000")
 user: Guest = Guest(client)
-user.register("jacobseunglee", "jacob@gmail.com", "jacob123")
+user.register("jacob", "jacob@jacob", "jacob123")
 
 """
 Emits register event to register user

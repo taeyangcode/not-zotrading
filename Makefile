@@ -1,4 +1,4 @@
 default:
-	python main.py
+	python server.py & python main.py
 lint:
 	mypy source
