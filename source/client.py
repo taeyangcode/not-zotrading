@@ -1,14 +1,7 @@
 import socketio
 import uuid
 
-from types import ClientEvents, RegisterError
-
-class UserDetails:
-    def __init__(self, username: str, email: str, password: str, id: uuid.UUID):
-        self.username = username
-        self.email = email
-        self.password = password
-        self.id = id
+from types import ClientEvents, RegisterError, UserDetails
 
 class User:
     def __init__(self, client: socketio.Client, id: uuid.UUID) -> None:

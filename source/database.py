@@ -1,8 +1,7 @@
 import firebase_admin
 from firebase_admin import firestore
 from firebase_admin import credentials
-from client import UserDetails
-from types import DatabaseUpdate, DatabaseRemove
+from types import DatabaseUpdate, DatabaseRemove, UserDetails
 cred = credentials.Certificate(".\stockexchange-fc03e-firebase-adminsdk-16fd9-742b765388.json")
 app = firebase_admin.initialize_app(cred)
 
