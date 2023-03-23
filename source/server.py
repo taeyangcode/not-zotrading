@@ -1,9 +1,7 @@
 import socketio
 import eventlet
-from database import create_user
-from types import UserDetails
-
-
+import source.types
+import source.database
 
 server: socketio.Server = socketio.Server()
 application: socketio.WSGIApp = socketio.WSGIApp(server)
@@ -11,6 +9,6 @@ application: socketio.WSGIApp = socketio.WSGIApp(server)
 eventlet.wsgi.server(eventlet.listen(("", 3000)), server)
 
 @server.event
-def register(data: UserDetails) -> None:
-    create_user(data)
-    
+def register(data: source.types.UserDetails) -> None:
+    print(data)
+    source.database.create_user(data)

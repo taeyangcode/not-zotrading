@@ -1,9 +1,10 @@
-from enum import Enum, StrEnum
+from enum import Enum
 import uuid
+
 class RegisterError(Enum):
     InvalidCredentials = 1
 
-class ClientEvents(StrEnum):
+class ClientEvents(Enum):
     Register = "register"
     Login = "login"
 

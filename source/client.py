@@ -1,7 +1,7 @@
 import socketio
 import uuid
 
-from types import ClientEvents, RegisterError, UserDetails
+from source.types import ClientEvents, RegisterError, UserDetails
 
 class User:
     def __init__(self, client: socketio.Client, id: uuid.UUID) -> None:
@@ -29,6 +29,7 @@ def create_client_connection(client: socketio.Client, port: int | None) -> socke
 
 client: socketio.Client = create_client_connection(socketio.Client(), 3000)
 user: Guest = Guest(client)
+user.register("jacobseunglee", "jacob@gmail.com", "jacob123")
 
 """
 Emits register event to register user

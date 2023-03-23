@@ -1,14 +1,14 @@
 import firebase_admin
 from firebase_admin import firestore
 from firebase_admin import credentials
-from types import DatabaseUpdate, DatabaseRemove, UserDetails
-cred = credentials.Certificate(".\stockexchange-fc03e-firebase-adminsdk-16fd9-742b765388.json")
+import source.types
+cred = credentials.Certificate("stockexchange-fc03e-firebase-adminsdk-16fd9-742b765388.json")
 app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
 
-def create_user(user_data: UserDetails) -> None:
+def create_user(user_data: source.types.UserDetails) -> None:
     doc = db.collection("users").document(user_data.id)
     doc.set({
         "username" : user_data.username,
@@ -21,21 +21,21 @@ def read_user(id: str) -> dict:
     doc = doc_ref.get()
     return doc.to_dict()
 
-def update_user(id: str, new_data: dict) -> DatabaseUpdate:
+def update_user(id: str, new_data: dict) -> source.types.DatabaseUpdate:
     doc = db.collection("users").document(id)
     if doc.get().exists:
         doc.update(new_data)
-        return DatabaseUpdate.UpdateSuccess
+        return source.types.DatabaseUpdate.UpdateSuccess
     else:
-        return DatabaseUpdate.UpdateFailure
+        return source.types.DatabaseUpdate.UpdateFailure
 
-def remove_user(id: str) -> DatabaseRemove:
+def remove_user(id: str) -> source.types.DatabaseRemove:
     doc = db.collection("users").document(id)
     if doc.get().exists:
         doc.delete()
-        return DatabaseRemove.RemoveSuccess
+        return source.types.DatabaseRemove.RemoveSuccess
     else:
-        return DatabaseRemove.RemoveFailure
+        return source.types.DatabaseRemove.RemoveFailure
 
 if __name__ == "__main__":
     pass
