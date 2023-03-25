@@ -1,5 +1,6 @@
 import socketio
 import uuid
+from typing import Callable
 from source.project_types import ClientEvents, RegisterError, UserDetails
 
 class User:
@@ -7,20 +8,47 @@ class User:
         self.client = client
         self.id = id
 
+    def delete_account(self):
+        self.client.emit("delete_account", data = { "id": str(self.id) })
+
 class Guest:
     def __init__(self, client: socketio.Client) -> None:
         self.client = client
         self.id = uuid.uuid4()
+        self.client_setup()
 
-    def register(self, username: str, email: str, password: str) -> None:
-        self.client.emit("register", data = { "username": username, "email": email, "password": password, "id": str(self.id) })
-    
-    def delete_account(self):
-        print(self.id)
-        self.client.emit("delete account", data = { "id": str(self.id) })
+    def client_setup(self):
+        """
+        Emits register event to register user
+        @param {socketio.Client} client - Client to register
+        @param {UserDetails} details - Details of user to register with
+        @param {RegisterError | None} error - Optional parameter to determine if error occurred in registration process
+        @returns {None}
+        """
+        @self.client.event
+        def register(client: socketio.Client, details: UserDetails, error: RegisterError | None) -> None:
+            match error:
+                case RegisterError.InvalidCredentials:
+                    # Handle Register Error
+                    return
 
-    def disconnect(self):
-        self.client.disconnect()
+                case None:
+                    client = User(details.id)
+                    return
+
+    def register(self, username: str, email: str, password: str) -> "Guest" | User:
+        callback: Callable[[RegisterError], Guest | User] = lambda error: User(self.client, self.id) if not error else self
+
+        self.client.emit(
+            "register",
+            data = {
+                "username": username,
+                "email": email,
+                "password": password,
+                "id": str(self.id)
+            },
+            callback = callback
+        )
 
 """
 Creates a connection to server under default port 3000
@@ -28,27 +56,6 @@ Creates a connection to server under default port 3000
 @param {int | None} port - Optional server port
 @returns {socketio.Client} - Connected client
 """
-
-def create_client_connection(client: socketio.Client, port: int | None) -> socketio.Client:
+def create_client_connection(client: socketio.Client, port: int | None = None) -> socketio.Client:
     client.connect("http://localhost:" + str(port or 3000))
     return client
-
-client: socketio.Client = create_client_connection(socketio.Client(), 3000)
-
-"""
-Emits register event to register user
-@param {socketio.Client} client - Client to register
-@param {UserDetails} details - Details of user to register with
-@param {RegisterError | None} error - Optional parameter to determine if error occurred in registration process
-@returns {None}
-"""
-@client.event
-def register(client: socketio.Client, details: UserDetails, error: RegisterError | None) -> None:
-    match error:
-        case RegisterError.InvalidCredentials:
-            # Handle Register Error
-            return
-
-        case None:
-            client = User(details.id)
-            return

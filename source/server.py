@@ -9,8 +9,9 @@ application: socketio.WSGIApp = socketio.WSGIApp(server)
 @server.on("register")
 def register(socket_id: str, details: dict[str, str]) -> None:
     create_user(UserDetails(details["username"], details["email"], details["password"], details["id"]))
+    return "return value"
 
-@server.on("delete account")
+@server.on("delete_account")
 def delete_account(socket_id: str, details: dict[str, str]) -> None:
     print("delete received")
     remove_user(details["id"])
