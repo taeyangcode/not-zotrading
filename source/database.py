@@ -30,8 +30,15 @@ def update_user(id: str, new_data: dict) -> DatabaseUpdate:
         return DatabaseUpdate.UpdateFailure
 
 def remove_user(id: str) -> DatabaseRemove:
+    print("deleting")
     doc = db.collection("users").document(id)
-    if doc.get().exists:
+    docsnap = doc.get()
+    if docsnap.exists:
+        fields = docsnap.to_dict().keys()
+        for field in fields:
+            doc.update({
+                field : firestore.DELETE_FIELD
+            })
         doc.delete()
         return DatabaseRemove.RemoveSuccess
     else:

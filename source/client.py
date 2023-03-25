@@ -14,6 +14,13 @@ class Guest:
 
     def register(self, username: str, email: str, password: str) -> None:
         self.client.emit("register", data = { "username": username, "email": email, "password": password, "id": str(self.id) })
+    
+    def delete_account(self):
+        print(self.id)
+        self.client.emit("delete account", data = { "id": str(self.id) })
+
+    def disconnect(self):
+        self.client.disconnect()
 
 """
 Creates a connection to server under default port 3000
