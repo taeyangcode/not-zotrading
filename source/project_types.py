@@ -3,10 +3,15 @@ import uuid
 
 class RegisterError(Enum):
     InvalidCredentials = 1
+    UnexpectedError = 2
 
 class ClientEvents(Enum):
     Register = "register"
     Login = "login"
+
+class DatabaseCreate(Enum):
+    CreateSuccess = 1
+    CreateFailure = 2
 
 class DatabaseUpdate(Enum):
     UpdateSuccess = 1

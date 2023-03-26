@@ -1,7 +1,7 @@
 import socketio
 import uuid
-from typing import Callable
-from source.project_types import ClientEvents, RegisterError, UserDetails
+from typing_extensions import Self
+from source.project_types import RegisterError, UserDetails
 
 class User:
     def __init__(self, client: socketio.Client, id: uuid.UUID) -> None:
@@ -36,10 +36,8 @@ class Guest:
                     client = User(details.id)
                     return
 
-    def register(self, username: str, email: str, password: str) -> "Guest" | User:
-        callback: Callable[[RegisterError], Guest | User] = lambda error: User(self.client, self.id) if not error else self
-
-        self.client.emit(
+    def register(self, username: str, email: str, password: str) -> Self | User:
+        print(self.client.emit(
             "register",
             data = {
                 "username": username,
@@ -47,8 +45,8 @@ class Guest:
                 "password": password,
                 "id": str(self.id)
             },
-            callback = callback
-        )
+            callback = lambda register_result: register_result
+        ))
 
 """
 Creates a connection to server under default port 3000
