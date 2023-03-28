@@ -16,7 +16,7 @@ class Guest:
     def __init__(self, client: Client) -> None:
         self.client = client
 
-    def register(self, username: str, email: str, password: str, id: str) -> Self | User:
+    def register(self, username: str, email: str, password: str) -> Self | User:
         def try_register():
             try:
                 register_response = post(
@@ -25,7 +25,7 @@ class Guest:
                         "username": username,
                         "email": email,
                         "password": password,
-                        "id": id
+                        "id": uuid4()
                     }
                 ).json()
                 return register_response["token"]

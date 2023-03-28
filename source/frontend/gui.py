@@ -14,7 +14,7 @@ class BuySell(tk.Frame):
     def __init__(self, master) -> None:
         super().__init__(master)
         self._draw()
-    
+
     def _draw(self):
         self.button_frame = tk.Frame(self)
         self.button_frame.pack(fill=tk.BOTH)

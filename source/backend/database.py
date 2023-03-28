@@ -12,9 +12,9 @@ def create_user(user_data: UserDetails, password: str) -> DatabaseCreate:
     doc = db.collection("users").document(user_data.id)
     try:
         doc.set({
-            "username" : user_data.username,
-            "email" : user_data.email,
-            "password" : password 
+            "username": user_data.username,
+            "email": user_data.email,
+            "password": password 
         })
         return DatabaseCreate.CreateSuccess
     except:
