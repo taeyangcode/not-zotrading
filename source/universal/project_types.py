@@ -1,5 +1,5 @@
 from enum import Enum
-import uuid
+from uuid import UUID
 
 class RegisterError(Enum):
     InvalidCredentials = 1
@@ -22,8 +22,7 @@ class DatabaseRemove(Enum):
     RemoveFailure = 2
 
 class UserDetails:
-    def __init__(self, username: str, email: str, password: str, id: uuid.UUID):
+    def __init__(self, username: str, email: str, id: UUID):
         self.username = username
         self.email = email
-        self.password = password
         self.id = id

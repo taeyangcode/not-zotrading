@@ -6,3 +6,9 @@ stockexchange-fc03e-firebase-adminsdk-16fd9-742b765388.json
 
 # pycache
 **/__pycache__
+
+# mypy cache
+**/.mypy_cache
+
+# environment related files/directories
+**/*.env

@@ -1,20 +1,20 @@
 import firebase_admin
 from firebase_admin import firestore
 from firebase_admin import credentials
-from project_types import UserDetails, DatabaseCreate, DatabaseUpdate, DatabaseRemove
+from source.universal.project_types import UserDetails, DatabaseCreate, DatabaseUpdate, DatabaseRemove
+
 cred = credentials.Certificate("stockexchange-fc03e-firebase-adminsdk-16fd9-742b765388.json")
 app = firebase_admin.initialize_app(cred)
 
 db = firestore.client()
 
-
-def create_user(user_data: UserDetails) -> DatabaseCreate:
+def create_user(user_data: UserDetails, password: str) -> DatabaseCreate:
     doc = db.collection("users").document(user_data.id)
     try:
         doc.set({
             "username" : user_data.username,
             "email" : user_data.email,
-            "password" : user_data.password
+            "password" : password 
         })
         return DatabaseCreate.CreateSuccess
     except:

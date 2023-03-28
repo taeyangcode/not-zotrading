@@ -1,4 +1,4 @@
 default:
-	python3 source/server.py | python3 main.py
+	flask --app main run
 lint:
 	mypy source
