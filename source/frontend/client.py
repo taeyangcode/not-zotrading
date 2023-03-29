@@ -19,18 +19,18 @@ class Guest:
     def register(self, username: str, email: str, password: str) -> Self | User:
         def try_register():
             try:
-                register_response = post(
-                    url = "http://localhost:5000/api/v1/register/",
-                    data = {
-                        "username": username,
-                        "email": email,
-                        "password": password,
-                        "id": uuid4()
-                    }
-                ).json()
+                url = "http://localhost:5000/api/v1/register/"
+                json = { 
+                    "username": username,
+                    "email": email,
+                    "password": password,
+                    "id": uuid4()
+                }
+                register_response = post(url, json=json).json()
                 return register_response["token"]
             except:
                 return None
+
         user_token = try_register()
         if user_token is not None:
             return User(self.client, user_token)

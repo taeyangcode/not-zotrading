@@ -10,22 +10,25 @@ class HTTPServer:
         self.server = server
         self.route_init()
 
-    def register_route(self) -> None:
+    def encode_dict(dict: dict[any, any]) -> str:
+        return jwt.encode(
+            header = { "alg": "HS256", "typ": "JWT" },
+            payload = dict,
+            key = getenv("JWT_SECRET")
+        ).decode("utf-8")
+
+    def register_route(self) -> dict[str, str]:
         @self.server.route("/api/v1/register/", methods=[ "POST" ])
         def register_account() -> bytes:
-            details = request.form
+            details = request.get_json()
             user_details = UserDetails(
-                    username = details["username"],
-                    email = details["email"],
-                    id = details["id"]
+                username = details["username"],
+                email = details["email"],
+                id = details["id"]
             )
             create_user(user_details, details["password"])
             return {
-                "token": jwt.encode(
-                    header = { "alg": "HS256", "typ": "JWT" },
-                    payload = user_details.__dict__,
-                    key = getenv("JWT_SECRET")
-                ).decode("utf-8")
+                "token": HTTPServer.encode_dict(vars(user_details))
             }
 
     def route_init(self):
