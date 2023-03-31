@@ -1,8 +1,7 @@
 import firebase_admin
 from firebase_admin import firestore
 from firebase_admin import credentials
-from source.universal.project_types import UserDetails, DatabaseCreate, DatabaseUpdate, DatabaseRemove
-
+from source.universal.project_types import UserDetails, DatabaseCreate, DatabaseUpdate, DatabaseRemove, StockRequest
 cred = credentials.Certificate("stockexchange-fc03e-firebase-adminsdk-16fd9-742b765388.json")
 app = firebase_admin.initialize_app(cred)
 
@@ -14,7 +13,8 @@ def create_user(user_data: UserDetails, password: str) -> DatabaseCreate:
         doc.set({
             "username": user_data.username,
             "email": user_data.email,
-            "password": password 
+            "password": password,
+            "portfolio" : {}
         })
         return DatabaseCreate.CreateSuccess
     except:
@@ -47,6 +47,16 @@ def remove_user(id: str) -> DatabaseRemove:
         return DatabaseRemove.RemoveSuccess
     else:
         return DatabaseRemove.RemoveFailure
+
+def change_portfolio(id: str, stock_data: StockRequest):
+    doc = db.collection("users").document(id)
+    docsnap = doc.get()
+    if docsnap.exists:
+        try:
+            docsnap.get(f"portfolio.{stock_data.company}")
+            doc.update({f"portfolio.{stock_data.company}": firestore.Increment(stock_data.shares)})
+        except KeyError:
+            doc.update({f"portfolio":{stock_data.company: stock_data.shares}})
 
 if __name__ == "__main__":
     pass

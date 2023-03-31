@@ -26,3 +26,8 @@ class UserDetails:
         self.username = username
         self.email = email
         self.id = id
+
+class StockRequest:
+    def __init__(self, company: str, shares: int):
+        self.company = company
+        self.shares = shares
