@@ -30,9 +30,11 @@ class Guest:
                 }
                 register_response: dict[str, str] = post(url, json=json).json()
                 match register_response["code"]:
-                    case 200:
+                    case "200":
                         return Success(register_response["token"])
-                    case 403:
+                    case "403":
+                        return Failure(None)
+                    case _:
                         return Failure(None)
             except:
                 return None
