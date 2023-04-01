@@ -1,6 +1,8 @@
 from flask import Flask, request
 from authlib.jose import jwt
 from os import getenv
+from returns.result import Success, Failure
+import logging
 
 from source.universal.project_types import UserDetails
 from source.backend.database import create_user
@@ -26,10 +28,20 @@ class HTTPServer:
                 email = details["email"],
                 id = details["id"]
             )
-            create_user(user_details, details["password"])
-            return {
-                "token": HTTPServer.encode_dict(vars(user_details))
-            }
 
-    def route_init(self):
+            match create_user(user_details, details["password"]):
+                case Success(_):
+                    logging.log(logging.INFO, "User successfully created.")
+                    return {
+                        "token": HTTPServer.encode_dict(vars(user_details)),
+                        "code": "200",
+                    }
+                case Failure(_):
+                    logging.warning(logging.ERROR, "User could not be created!")
+                    return {
+                        "token": "",
+                        "code": "403"
+                    }
+
+    def route_init(self) -> None:
         self.register_route()

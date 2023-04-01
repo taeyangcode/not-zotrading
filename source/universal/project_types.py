@@ -5,21 +5,12 @@ class RegisterError(Enum):
     InvalidCredentials = 1
     UnexpectedError = 2
 
-class ClientEvents(Enum):
-    Register = "register"
-    Login = "login"
+class DatabaseError(Enum):
+    UnexpectedError = 1
+    UserDoesNotExist = 2
 
-class DatabaseCreate(Enum):
-    CreateSuccess = 1
-    CreateFailure = 2
-
-class DatabaseUpdate(Enum):
-    UpdateSuccess = 1
-    UpdateFailure = 2
-
-class DatabaseRemove(Enum):
-    RemoveSuccess = 1
-    RemoveFailure = 2
+class ServerConnectionError(Enum):
+    UnexpectedError = 1
 
 class UserDetails:
     def __init__(self, username: str, email: str, id: UUID):

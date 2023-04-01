@@ -1,9 +1,11 @@
 from socketio import Client
-from uuid import UUID, uuid4
+from uuid import uuid4
 from typing_extensions import Self
 from requests import post
+from returns.result import Success, Failure, Result
+import logging
 
-from source.universal.project_types import RegisterError, UserDetails
+from source.universal.project_types import ServerConnectionError
 
 class User:
     def __init__(self, client: Client, token: bytes) -> None:
@@ -16,25 +18,30 @@ class Guest:
     def __init__(self, client: Client) -> None:
         self.client = client
 
-    def register(self, username: str, email: str, password: str) -> Self | User:
-        def try_register():
+    def register(self, username: str, email: str, password: str) -> Result[User, Self]:
+        def try_register() -> Result[str, None]:
             try:
-                url = "http://localhost:5000/api/v1/register/"
-                json = { 
+                url: str = "http://localhost:5000/api/v1/register/"
+                json: dict[str, str] = {
                     "username": username,
                     "email": email,
                     "password": password,
                     "id": uuid4()
                 }
-                register_response = post(url, json=json).json()
-                return register_response["token"]
+                register_response: dict[str, str] = post(url, json=json).json()
+                match register_response["code"]:
+                    case 200:
+                        return Success(register_response["token"])
+                    case 403:
+                        return Failure(None)
             except:
                 return None
 
-        user_token = try_register()
-        if user_token is not None:
-            return User(self.client, user_token)
-        return self
+        match try_register():
+            case Success(user_token):
+                return User(self.client, user_token)
+            case Failure(_):
+                return Self
 
 """
 Creates a connection to server under default port 3000
@@ -42,9 +49,8 @@ Creates a connection to server under default port 3000
 @param {int | None} port - Optional server port
 @returns {socketio.Client} - Connected client
 """
-def create_client_connection(client: Client, port: int | None = None) -> Client:
+def create_client_connection(client: Client, port: str | None = "6000") -> Result[(), ServerConnectionError]:
     try:
-        client.connect("http://localhost:" + str(port or 6000))
+        client.connect("http://localhost:" + port)
     except:
-        print("Could not connect to http://localhost:" + str(port or 6000))
-    return client
+        logging.warning("Could not connect to http://localhost:" + port)
