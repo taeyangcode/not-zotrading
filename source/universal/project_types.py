@@ -8,6 +8,8 @@ class RegisterError(Enum):
 class DatabaseError(Enum):
     UnexpectedError = 1
     UserDoesNotExist = 2
+    UserAlreadyExists = 3
+    CompanyDoesNotExist = 4
 
 class ServerConnectionError(Enum):
     UnexpectedError = 1
