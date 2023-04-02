@@ -10,16 +10,12 @@ app = firebase_admin.initialize_app(cred)
 db = firestore.client()
 
 def create_user(user_data: UserDetails, password: str) -> Result[(), DatabaseError]:
-    doc_ref = db.collection("users").document(user_data.id)
+    user_data_dict: dict[str, str] = user_data.to_dict()
+    doc_ref = db.collection("users").document(user_data_dict["id"])
     if doc_ref.get().exists:
         return Failure(DatabaseError.UserAlreadyExists)
     try:
-        doc_ref.set({
-            "username": user_data.username,
-            "email": user_data.email,
-            "password": password,
-            "portfolio" : {}
-        })
+        doc_ref.set(user_data_dict)
         return Success(())
     except:
         return Failure(DatabaseError.UnexpectedError)

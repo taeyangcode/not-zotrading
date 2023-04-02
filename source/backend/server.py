@@ -2,9 +2,10 @@ from flask import Flask, request
 from authlib.jose import jwt
 from os import getenv
 from returns.result import Success, Failure
+from uuid import uuid4
 import logging
 
-from source.universal.project_types import UserDetails
+from source.universal.project_types import UserDetails, TimeAuthorize
 from source.backend.database import create_user
 
 class HTTPServer:
@@ -26,14 +27,15 @@ class HTTPServer:
             user_details = UserDetails(
                 username = details["username"],
                 email = details["email"],
-                id = details["id"]
+                id = uuid4(),
+                exp = TimeAuthorize.create_expirey_time()
             )
 
             match create_user(user_details, details["password"]):
                 case Success(_):
                     logging.log(logging.INFO, "User successfully created.")
                     return {
-                        "token": HTTPServer.encode_dict(vars(user_details)),
+                        "token": HTTPServer.encode_dict(user_details.to_dict()),
                         "code": "200",
                     }
                 case Failure(_):

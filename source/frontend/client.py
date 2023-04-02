@@ -25,8 +25,7 @@ class Guest:
                 json: dict[str, str] = {
                     "username": username,
                     "email": email,
-                    "password": password,
-                    "id": uuid4()
+                    "password": password
                 }
                 register_response: dict[str, str] = post(url, json=json).json()
                 match register_response["code"]:
@@ -55,4 +54,4 @@ def create_client_connection(client: Client, port: str | None = "6000") -> Resul
     try:
         client.connect("http://localhost:" + port)
     except:
-        logging.warning("Could not connect to http://localhost:" + port)
+        logging.warning(logging.CRITICAL, "Could not connect to http://localhost:" + port)
