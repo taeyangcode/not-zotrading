@@ -43,20 +43,22 @@ class TimeAuthorize:
         return str(datetime.fromtimestamp(float(timestamp)))
 
 class UserDetails:
-    def __init__(self, username: str, email: str, id: UUID, exp: datetime):
+    def __init__(self, username: str, email: str, id: UUID, exp: datetime, portfolio: dict[str, int] = {}):
         self.username = username
         self.email = email
         self.id = id
         self.exp = exp
+        self.portfolio = portfolio
 
-    def to_dict(self) -> dict[str, str]:
+    def to_dict(self) -> dict[str, str|dict]:
         return {
             "username": self.username,
             "email": self.email,
             "id": str(self.id),
-            "exp": TimeAuthorize.time_to_timestamp(self.exp)
+            "exp": TimeAuthorize.time_to_timestamp(self.exp),
+            "portfolio" : self.portfolio
         }
-
+        
 class StockRequest:
     def __init__(self, company: str, shares: int):
         self.company = company

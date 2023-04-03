@@ -28,7 +28,8 @@ class HTTPServer:
                 username = details["username"],
                 email = details["email"],
                 id = uuid4(),
-                exp = TimeAuthorize.create_expirey_time()
+                exp = TimeAuthorize.create_expirey_time(),
+                portfolio={}
             )
 
             match create_user(user_details, details["password"]):
