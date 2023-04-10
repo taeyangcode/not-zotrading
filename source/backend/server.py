@@ -7,6 +7,7 @@ import logging
 
 from source.universal.project_types import UserDetails, TimeAuthorize
 from source.backend.database import create_user
+from source.backend.middleware import Middleware
 
 class HTTPServer:
     def __init__(self, server: Flask) -> None:
@@ -37,13 +38,40 @@ class HTTPServer:
                     return {
                         "token": HTTPServer.encode_dict(user_details.to_dict()),
                         "code": "200",
+                        "message": "User successfully created."
                     }
                 case Failure(_):
-                    logging.warning(logging.ERROR, "User could not be created!")
+                    logging.warning(logging.ERROR, "User could not be created.")
                     return {
                         "token": "",
-                        "code": "403"
+                        "code": "403",
+                        "message": "User could not be created."
                     }
+
+    def user_route(self) -> dict[str, str]:
+        @self.server.route("/api/v1/user", methods = [ "GET" ])
+        def handle_user_route() -> bytes:
+            user_details: dict[str, str] = request.get_json()
+
+            if "token" not in user_details:
+                return {
+                    "token": "",
+                    "code": "403",
+                    "message": "User token not supplied."
+                }
+
+            if Middleware.valid_encoded_token(user_details["token"]):
+                return {
+                    "token": user_details["token"],
+                    "code": "200",
+                    "message": "User validated."
+                }
+            return {
+                "token": user_details["token"],
+                "code": "403",
+                "message": "Invalid token."
+            }
 
     def route_init(self) -> None:
         self.register_route()
+        self.user_route()

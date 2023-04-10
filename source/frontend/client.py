@@ -1,5 +1,4 @@
 from socketio import Client
-from uuid import uuid4
 from typing_extensions import Self
 from requests import post
 from returns.result import Success, Failure, Result

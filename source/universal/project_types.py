@@ -36,11 +36,11 @@ class TimeAuthorize:
     def time_expired(time: datetime) -> bool:
         return TimeAuthorize.current_time() < time
 
-    def time_to_timestamp(time: datetime) -> str:
-        return str(datetime.timestamp(time))
+    def time_to_timestamp(time: datetime) -> int:
+        return int(datetime.timestamp(time))
 
-    def timestamp_to_time(timestamp: float | str) -> str:
-        return str(datetime.fromtimestamp(float(timestamp)))
+    def timestamp_to_time(timestamp: int) -> datetime:
+        return datetime.fromtimestamp(timestamp)
 
 class UserDetails:
     def __init__(self, username: str, email: str, id: UUID, exp: datetime):
